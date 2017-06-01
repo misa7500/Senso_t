@@ -1,10 +1,15 @@
 package com.example.rmisael.senso_t;
 
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.CountDownTimer;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.RelativeLayout;
@@ -19,20 +24,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     int x,y,z,ran;
     boolean ban = false;
     String lado;
+    MediaPlayer sonido;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         encabezado=(TextView)findViewById(R.id.encabezado);
-        encabezado.setTextSize(24);
+        encabezado.setTextSize(100);
         fondo=(RelativeLayout)findViewById(R.id.fondo);
         SensorManager miSensor=(SensorManager)getSystemService(SENSOR_SERVICE);
         ran =(int) (Math.random()*3)+1;
         miSensor.registerListener(this,miSensor.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-                SensorManager.SENSOR_DELAY_NORMAL);
+                SensorManager.SENSOR_DELAY_UI);
     }
 
     @Override
@@ -50,77 +57,77 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             if (ban) {
                 if (ran == 1) {
                     lado = ("Izquierda");
-                    if (y <= -7) {
-                        fondo.setBackgroundColor(Color.GREEN);
-                        encabezado.setText("Correcto");
-                        ban = false;
-                        ran = (int) (Math.random() * 3) + 1;
+                    // sonido = MediaPlayer.create(getBaseContext(),R.raw.izquierda);
 
+                    if (y <= -7) {
+
+                        encabezado.setText("Correcto");
+                        fondo.setBackgroundColor(Color.GREEN);
+                        new CountDownTimer(1500, 1000) {
+                            public void onTick(long millisUntilFinished) {
+                            }
+
+                            public void onFinish() {
+                                ban = false;
+                                ran = (int) (Math.random() * 3) + 1;
+                            }
+                        }.start();
+                    }
+                    else if (y >= +7 || z >= 7)
+                    {
+                        fondo.setBackgroundColor(Color.RED);
                     }
 
                 } else if (ran == 2) {
                     lado = ("Derecha");
+                    //sonido = MediaPlayer.create(getBaseContext(),R.raw.derecha);
+
                     if (y >= +7) {
-                        fondo.setBackgroundColor(Color.GREEN);
                         encabezado.setText("Correcto");
-                        ban = false;
-                        ran = (int) (Math.random() * 3) + 1;
+                        fondo.setBackgroundColor(Color.GREEN);
+                        new CountDownTimer(1500, 1000) {
+                            public void onTick(long millisUntilFinished) {
+                            }
+
+                            public void onFinish() {
+                                ban = false;
+                                ran = (int) (Math.random() * 3) + 1;
+                            }
+                        }.start();
+                    }
+                    else if ( y <= -7 || z >= 7)
+                    {
+                        fondo.setBackgroundColor(Color.RED);
                     }
                 } else if (ran == 3) {
                     lado = ("Atras");
+                    //sonido = MediaPlayer.create(getBaseContext(),R.raw.atras);
+
                     if (z >= 7) {
-                        fondo.setBackgroundColor(Color.GREEN);
+
                         encabezado.setText("Correcto");
-                        ban = false;
-                        ran = (int) (Math.random() * 3) + 1;
+                        fondo.setBackgroundColor(Color.GREEN);
+                        new CountDownTimer(1500, 1000) {
+                            public void onTick(long millisUntilFinished) {
+                            }
+
+                            public void onFinish() {
+                                ban = false;
+                                ran = (int) (Math.random() * 3) + 1;
+                            }
+                        }.start();
+                    }
+                    else if (y >= +7 ||y <= -7 )
+                    {
+                        fondo.setBackgroundColor(Color.RED);
                     }
                 } else
                     ban = false;
 
             }
-        //}
 
-       /* else if (x <= -7)
-            if (ban){
-                if (ran == 1)
-                {
-                    lado = ("Derecha");
-                    if (y<=-7){
-                        fondo.setBackgroundColor(Color.GREEN);
-                        encabezado.setText("Correcto");
-                        ban = false;
-                        ran =(int) (Math.random()*3)+1;
 
-                    }
-
-                }
-                else if (ran == 2)
-                {
-                    lado = ("Izquierda");
-                    if (y>=+7){
-                        fondo.setBackgroundColor(Color.GREEN);
-                        encabezado.setText("Correcto");
-                        ban = false;
-                        ran =(int) (Math.random()*3)+1;
-                    }
-                }
-                else if (ran == 3)
-                {
-                    lado = ("Atras");
-                    if (z>=7){
-                        fondo.setBackgroundColor(Color.GREEN);
-                        encabezado.setText("Correcto");
-                        ban = false;
-                        ran =(int) (Math.random()*3)+1;
-                    }
-                }
-                else
-                    ban = false;
-
-            }
-        */
-
-        encabezado.setText("Valor: "+ x + ","+y+","+z+","+lado);
+        encabezado.setText(lado);
 
 //        fondo.setBackgroundColor(Color.rgb(x*20,y*20,z*20));
 
